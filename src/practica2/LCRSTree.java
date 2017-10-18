@@ -2,6 +2,7 @@ package practica2;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 import material.Position;
@@ -12,6 +13,8 @@ import material.tree.narytree.NAryTree;
 
 public class LCRSTree<E> implements NAryTree<E> {
 
+	private LCRSNode<E> root;
+	
 	/**
      * Creates an empty tree.
      */
@@ -27,7 +30,7 @@ public class LCRSTree<E> implements NAryTree<E> {
      */
     @Override
     public boolean isEmpty() {
-    	throw new RuntimeException("Not yet implemented");
+    	return root == null;
     }
 
     /**
@@ -37,7 +40,7 @@ public class LCRSTree<E> implements NAryTree<E> {
      */
     @Override
     public boolean isInternal(Position<E> v) {
-    		throw new RuntimeException("Not yet implemented");
+    		return !isLeaf(v);
     }
 
     /**
@@ -47,7 +50,8 @@ public class LCRSTree<E> implements NAryTree<E> {
      */
     @Override
     public boolean isLeaf(Position<E> p) {
-    		throw new RuntimeException("Not yet implemented");
+    		LCRSNode<E> node = checkPosition(p);
+			return (node.leftChild == null)&&(node.rightSibling == null);
     }
 
     /**
@@ -76,7 +80,11 @@ public class LCRSTree<E> implements NAryTree<E> {
      */
     @Override
     public Position<E> parent(Position<E> p) {
-    		throw new RuntimeException("Not yet implemented");
+    		LCRSNode<E> node = checkPosition(p);
+    		Position<E> pos = (Position<E>) node.parent;
+    		if (pos == null)
+    			throw new RuntimeException();
+    		return pos;
     }
 
     /**
@@ -85,7 +93,18 @@ public class LCRSTree<E> implements NAryTree<E> {
      */
     @Override
     public Iterable<? extends Position<E>> children(Position<E> p) {
-    		throw new RuntimeException("Not yet implemented");
+    	LCRSNode<E> node = checkPosition(p);
+    	List<Position<E>> list = new LinkedList<>();
+    	if (node.leftChild == null)
+    		return list;
+    	else {
+    		list.add((Position<E>) node.leftChild);
+    		while (node.rightSibling != null) {
+    			list.add((Position<E>) node.rightSibling);
+    			node = node.rightSibling;
+    		}
+    		return list;
+    	}
     }
 
     /**
@@ -174,6 +193,27 @@ public class LCRSTree<E> implements NAryTree<E> {
      */
     public void attach(Position<E> p, LinkedTree<E> t) {
     		throw new RuntimeException("Not yet implemented");
+    }
+    
+    private LCRSNode<E> checkPosition(Position<E> p) {
+    	if ((p == null) || !(p instanceof LCRSNode))
+    		throw new RuntimeException("The position is invalid");
+    	return (LCRSNode<E>) p;
+    }
+    
+    private class LCRSNode<E> implements material.Position<E> {
+    	
+    	private E element;
+    	private LCRSNode parent;
+    	private LCRSNode leftChild;
+    	private LCRSNode rightSibling;
+    	private LCRSTree myTree;
+    	
+		@Override
+		public E getElement() {
+			return element;
+		}
+    	
     }
 
 }

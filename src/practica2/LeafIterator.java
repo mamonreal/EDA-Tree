@@ -33,6 +33,15 @@ public class LeafIterator <T> implements Iterator<Position<T>> {
         		nodeQueue.add(p);
         	}
         	else {
+        		/* En el caso de que tenga que iterar los hijos de
+        		 * izquierda a derecha
+        		 */
+//        		LinkedList <Position<T>> children = new LinkedList<>();
+//        		for (Position <T> node: this.tree.children(p))
+//        			children.addFirst(node);
+//        		while (! children.isEmpty()) {
+//        			auxList.addFirst(children.pollFirst());
+//        		}
         		for (Position <T> node: this.tree.children(p))
         			auxList.addLast(node);
         	}        		
