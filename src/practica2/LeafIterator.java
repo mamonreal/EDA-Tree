@@ -30,39 +30,20 @@ public class LeafIterator <T> implements Iterator<Position<T>> {
         	nodeStack.add(tree.root());
         }
         else {
-        	nodeStack.add(tree.root());
-            Position<T> aux = nodeStack.removeFirst();
+        	Position<T> aux = tree.root();
             LinkedList<Position<T>> children = new LinkedList<>();
-            
-           while(!tree.isLeaf(aux)) { 
+            //itera hasta encontrar el primer hijo (recorrido profundidad)
+            while(!tree.isLeaf(aux)) {
+            	//Da la vuelta a la lista de hijos de aux
             	for (Position <T> node: this.tree.children(aux))
-	    			children.addFirst(node);
+            		children.addFirst(node);
 	    		while (! children.isEmpty()) {
-	    			nodeStack.addFirst(children.pollFirst());
+	    			nodeStack.addFirst(children.removeFirst());
 	    		}
 	    		aux = nodeStack.removeFirst();
-           }
+    		}
+            nodeStack.addFirst(aux);
         }
-        
-//        while(! auxList.isEmpty()) {
-//        	Position<T> p = auxList.pollFirst();
-//        	if (tree.isLeaf(p)) {
-//        		nodeStack.add(p);
-//        	}
-//        	else {
-//        		/* En el caso de que tenga que iterar los hijos de
-//        		 * izquierda a derecha
-//        		 */
-//        		LinkedList <Position<T>> children = new LinkedList<>();
-//        		for (Position <T> node: this.tree.children(p))
-//        			children.addFirst(node);
-//        		while (! children.isEmpty()) {
-//        			auxList.addFirst(children.pollFirst());
-//        		}
-//        		for (Position <T> node: this.tree.children(p))
-//        			auxList.addLast(node);
-//        	}        		
-//        }
     }
             
     @Override
@@ -72,6 +53,19 @@ public class LeafIterator <T> implements Iterator<Position<T>> {
 
     @Override
     public Position<T> next() {
-    	return nodeStack.pollFirst();
+    	Position<T> aux = nodeStack.removeFirst();
+    	if (!tree.isLeaf(aux)) {
+	    	LinkedList<Position<T>> children = new LinkedList<>();
+	    	while(!tree.isLeaf(aux)) {
+	    		//Da la vuelta a la lista de hijos de aux
+	        	for (Position <T> node: this.tree.children(aux))
+	        		children.addFirst(node);
+	    		while (! children.isEmpty()) {
+	    			nodeStack.addFirst(children.removeFirst());
+	    		}
+	    		aux = nodeStack.removeFirst();
+	    	}
+    	}
+    	return aux;
     }
 }
