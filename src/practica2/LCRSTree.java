@@ -12,6 +12,60 @@ import material.tree.narytree.LinkedTree;
 import material.tree.narytree.NAryTree;
 
 public class LCRSTree<E> implements NAryTree<E> {
+	
+private class LCRSNode<E> implements material.Position<E> {
+    	
+    	private E element;
+    	private LCRSNode parent;
+    	private LCRSNode leftChild;
+    	private LCRSNode rightSibling;
+    	
+		public LCRSNode(E element) {
+			this(element, null, null, null);
+		}
+    	
+    	public LCRSNode(E element, LCRSNode parent, LCRSNode leftChild, LCRSNode rightSibling) {
+			super();
+			this.element = element;
+			this.parent = parent;
+			this.leftChild = leftChild;
+			this.rightSibling = rightSibling;
+		}
+
+		public LCRSNode getParent() {
+			return parent;
+		}
+
+		public void setParent(LCRSNode parent) {
+			this.parent = parent;
+		}
+
+		public LCRSNode getLeftChild() {
+			return leftChild;
+		}
+
+		public void setLeftChild(LCRSNode leftChild) {
+			this.leftChild = leftChild;
+		}
+
+		public LCRSNode getRightSibling() {
+			return rightSibling;
+		}
+
+		public void setRightSibling(LCRSNode rightSibling) {
+			this.rightSibling = rightSibling;
+		}
+
+		public void setElement(E element) {
+			this.element = element;
+		}
+
+		@Override
+		public E getElement() {
+			return element;
+		}
+    	
+    }
 
 	private LCRSNode<E> root;
 	
@@ -70,7 +124,10 @@ public class LCRSTree<E> implements NAryTree<E> {
      */
     @Override
     public Position<E> root() {
-    		throw new RuntimeException("Not yet implemented");
+    	if (root == null) {
+            throw new RuntimeException("The tree is empty");
+        }
+        return root;
     }
 
     /**
@@ -113,7 +170,7 @@ public class LCRSTree<E> implements NAryTree<E> {
      */
     @Override
     public Iterator<Position<E>> iterator() {
-    		throw new RuntimeException("Not yet implemented");
+    	return new BreadthFirstTreeIterator<>(this);
     }
 
  
@@ -122,7 +179,10 @@ public class LCRSTree<E> implements NAryTree<E> {
      */
     @Override
     public E replace(Position<E> p, E e) {
-    		throw new RuntimeException("Not yet implemented");
+    	LCRSNode node = checkPosition(p);
+    	E temp = p.getElement();
+    	node.setElement(e);
+    	return temp;
     }
 
     /**
@@ -130,7 +190,12 @@ public class LCRSTree<E> implements NAryTree<E> {
      */
     @Override
     public Position<E> addRoot(E e) {
-    		throw new RuntimeException("Not yet implemented");
+    	if (this.isEmpty()) {
+    		LCRSNode node = new LCRSNode<E>(e);
+    		root = node;
+    		return node;
+    	} else 
+    		throw new RuntimeException("Tree already has a root");
     }
 
     /**
@@ -191,29 +256,37 @@ public class LCRSTree<E> implements NAryTree<E> {
      * @param p
      * @param t 
      */
-    public void attach(Position<E> p, LinkedTree<E> t) {
-    		throw new RuntimeException("Not yet implemented");
+    public void attach(Position<E> p, LCRSTree<E> t) {
+    	LCRSNode node = checkPosition(p);
+    	LCRSNode r = checkPosition(t.root());
+		
+//    	Si el nodo no tiene hijos mete el arbol t como hijo
+//    	del nodo, sino busca el primer nodo hermano que no
+//    	tenga hermano derecho y mete el arbol t
+    	if (node.leftChild == null) {
+    		node.leftChild = r;
+    	}
+    	else {
+    		LCRSNode nodeB = node.leftChild;
+    		while (nodeB.rightSibling != null) {
+    			nodeB = nodeB.rightSibling;
+    		}
+    		nodeB.rightSibling = r;
+    	}
+//    	Al nuevo nodo r se le da un padre y a la raiz del arbol 
+//    	t se le asigna null
+    	r.setParent(node);
+		t.root = null;
     }
     
-    private LCRSNode<E> checkPosition(Position<E> p) {
+    
+
+	private LCRSNode<E> checkPosition(Position<E> p) {
     	if ((p == null) || !(p instanceof LCRSNode))
     		throw new RuntimeException("The position is invalid");
     	return (LCRSNode<E>) p;
     }
     
-    private class LCRSNode<E> implements material.Position<E> {
-    	
-    	private E element;
-    	private LCRSNode parent;
-    	private LCRSNode leftChild;
-    	private LCRSNode rightSibling;
-    	private LCRSTree myTree;
-    	
-		@Override
-		public E getElement() {
-			return element;
-		}
-    	
-    }
+    
 
 }

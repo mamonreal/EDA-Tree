@@ -25,7 +25,7 @@ public class LinkedTree<E> implements NAryTree<E> {
         /**
          * Main constructor
          */
-        public TreeNode(LinkedTree<T> t, T e, TreeNode<T> p, List<TreeNode<T>> c) {
+        public TreeNode(T e, TreeNode<T> p, List<TreeNode<T>> c) {
             this.element = e;
             this.parent = p;
             this.children = c;
@@ -193,7 +193,7 @@ public class LinkedTree<E> implements NAryTree<E> {
         if (!isEmpty()) {
             throw new RuntimeException("Tree already has a root");
         }
-        root = new TreeNode<>(this, e, null, new ArrayList<TreeNode<E>>());
+        root = new TreeNode<>(e, null, new ArrayList<TreeNode<E>>());
         return root;
     }
 
@@ -230,7 +230,7 @@ public class LinkedTree<E> implements NAryTree<E> {
     @Override
     public Position<E> add(E element, Position<E> p) {
         TreeNode<E> parent = checkPosition(p);
-        TreeNode<E> newNode = new TreeNode<>(this, element, parent, new ArrayList<TreeNode<E>>());
+        TreeNode<E> newNode = new TreeNode<>(element, parent, new ArrayList<TreeNode<E>>());
         List<LinkedTree<E>.TreeNode<E>> l = parent.getChildren();
         l.add(newNode);
         return newNode;
@@ -246,7 +246,7 @@ public class LinkedTree<E> implements NAryTree<E> {
     @Override
     public Position<E> add(E element, Position<E> p, final int n) {
         TreeNode<E> parent = checkPosition(p);
-        TreeNode<E> newNode = new TreeNode<>(this, element, parent, new ArrayList<TreeNode<E>>());
+        TreeNode<E> newNode = new TreeNode<>(element, parent, new ArrayList<TreeNode<E>>());
         List<LinkedTree<E>.TreeNode<E>> l = parent.getChildren();
         if (n > l.size())
             throw new RuntimeException("The element can't be inserted at specified position.");
