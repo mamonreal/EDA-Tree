@@ -13,7 +13,7 @@ import material.tree.narytree.NAryTree;
 
 public class LCRSTree<E> implements NAryTree<E> {
 	
-private class LCRSNode<E> implements material.Position<E> {
+	private class LCRSNode<E> implements material.Position<E> {
     	
     	private E element;
     	private LCRSNode parent;
@@ -73,7 +73,7 @@ private class LCRSNode<E> implements material.Position<E> {
      * Creates an empty tree.
      */
     public LCRSTree() {
-    		throw new RuntimeException("Not yet implemented");
+    	root = null;
     }
 
     /**
@@ -115,7 +115,7 @@ private class LCRSNode<E> implements material.Position<E> {
      */
     @Override
     public boolean isRoot(Position<E> p) {
-    		throw new RuntimeException("Not yet implemented");
+    	return p == root;
     }
 
     /**
@@ -203,7 +203,11 @@ private class LCRSNode<E> implements material.Position<E> {
      */
     @Override
     public void swapElements(Position<E> p1, Position<E> p2) {
-    		throw new RuntimeException("Not yet implemented");
+    	LCRSNode node1 = checkPosition(p1);
+    	LCRSNode node2 = checkPosition(p2);
+    	E aux = (E) node1.element;
+    	node1.element = node2.element;
+    	node2.element = aux;
     }
 
     /**
@@ -214,7 +218,20 @@ private class LCRSNode<E> implements material.Position<E> {
      */
     @Override
     public Position<E> add(E element, Position<E> p) {
-    		throw new RuntimeException("Not yet implemented");
+    	LCRSNode<E> node = checkPosition(p);
+    	LCRSNode<E> addNode = new LCRSNode<E>(element);
+    	if (node.leftChild == null) {
+    		node.leftChild = addNode;
+    		addNode.parent = node;
+    	} else {
+    		LCRSNode<E> aux = node.leftChild;
+    		while (aux.rightSibling == null) {
+    			aux = aux.rightSibling;
+    		}
+    		aux = addNode;
+    		addNode.parent = node;
+    	}
+		return addNode;
     }
 
     /**
@@ -238,7 +255,26 @@ private class LCRSNode<E> implements material.Position<E> {
      */
     @Override
     public void remove(Position<E> p) {
-    		throw new RuntimeException("Not yet implemented");
+    	LCRSNode<E> node = checkPosition(p);
+    	LCRSNode<E> aux = node.parent;
+    	if (aux.leftChild == node) {
+    		if (node.rightSibling == null) {
+    			aux.leftChild = null;
+    		} else {
+    			aux.leftChild = node.rightSibling;
+    		}    		
+    	} else {
+    		LCRSNode<E> n = aux.leftChild;
+    		while (n.rightSibling != node) {
+    			n = n.rightSibling;
+    		}
+    		if (node.rightSibling == null) {
+    			n.rightSibling = null;
+    		} else {
+    			n.rightSibling = node.rightSibling;
+    		}
+    	}
+    	node.parent = null;
     }
     
     /**
